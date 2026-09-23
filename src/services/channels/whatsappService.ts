@@ -27,7 +27,13 @@ class WhatsappService {
   }
 
   // WhatsApp Cloud integration methods
-  async exchangeCode(payload: { code: string; business_account_id: string; waba_id: string }) {
+  // Fix #84: acepta code (flujo server-side) o access_token (Embedded Signup con config_id)
+  async exchangeCode(payload: {
+    code?: string;
+    access_token?: string;
+    business_account_id: string;
+    waba_id: string;
+  }) {
     const response = await api.post(`/whatsapp/authorization`, payload);
     return extractData<any>(response);
   }

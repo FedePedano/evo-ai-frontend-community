@@ -419,25 +419,29 @@ const AuthorizationSuccessBanner: React.FC<{
   const handleReconnectWhatsApp = async () => {
     setIsReconnecting(true);
 
-    // Collect both the SDK code response and the Embedded Signup postMessage payload,
+    // Collect both the SDK token response and the Embedded Signup postMessage payload,
     // then trigger the actual reconnect once both are present (mirrors CloudWhatsappForm).
+    // Fix #84: aceptar code o accessToken.
     let sdkCode: string | null = null;
+    let sdkAccessToken: string | null = null;
     let signupData: { waba_id?: string; phone_number_id?: string; business_id?: string } | null =
       null;
     let finished = false;
 
     const finalizeReconnect = async () => {
       if (finished) return;
-      if (!sdkCode || !signupData?.waba_id) return;
+      if ((!sdkCode && !sdkAccessToken) || !signupData?.waba_id) return;
       finished = true;
 
       try {
+        const payload: Record<string, string> = {
+          business_account_id: signupData.business_id || '',
+          waba_id: signupData.waba_id,
+        };
+        if (sdkCode) payload.code = sdkCode;
+        if (sdkAccessToken) payload.access_token = sdkAccessToken;
         const { access_token, phone_number_id: backendPhoneNumberId } =
-          await WhatsappService.exchangeCode({
-            code: sdkCode,
-            business_account_id: signupData.business_id || '',
-            waba_id: signupData.waba_id,
-          });
+          await WhatsappService.exchangeCode(payload as any);
 
         // Prefer phone_number_id from the Embedded Signup event because the backend
         // may return a different one (first phone on the account) — same rule as
@@ -523,8 +527,11 @@ const AuthorizationSuccessBanner: React.FC<{
 
       window.FB.login(
         (response: any) => {
-          if (response.authResponse?.code) {
-            sdkCode = response.authResponse.code;
+          const token =
+            response.authResponse?.code || response.authResponse?.accessToken;
+          if (token) {
+            sdkCode = response.authResponse.code || null;
+            sdkAccessToken = response.authResponse.accessToken || null;
             finalizeReconnect();
           } else {
             window.removeEventListener('message', messageHandler);
@@ -534,8 +541,6 @@ const AuthorizationSuccessBanner: React.FC<{
         },
         {
           config_id: config.wpWhatsappConfigId,
-          response_type: 'code',
-          override_default_response_type: true,
           extras: {
             version: 'v3',
             featureType: 'whatsapp_business_app_onboarding',
