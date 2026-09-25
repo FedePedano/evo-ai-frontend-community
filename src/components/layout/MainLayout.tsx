@@ -141,9 +141,12 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
         {/* Main Content */}
         <main className="flex-1 min-h-0 overflow-auto bg-background transition-colors duration-150 ease-in-out">
-          {/* Keyed by path so a crashed page does not keep the fallback up after navigating away */}
+          {/* Keyed by SECTION (first path segment), not full path: a crashed page
+              still resets its fallback when switching sections, but navigating
+              WITHIN a section (/conversations <-> /conversations/:id) no longer
+              remounts the whole tree + wipes context + refetches the list. */}
           <div className="h-full">
-            <ErrorBoundary key={pathname}>{children}</ErrorBoundary>
+            <ErrorBoundary key={pathname.split('/').filter(Boolean)[0] ?? 'root'}>{children}</ErrorBoundary>
           </div>
         </main>
 
