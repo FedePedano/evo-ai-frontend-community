@@ -98,23 +98,28 @@ const CustomerDashboardPage = () => {
   const [inboxes, setInboxes] = useState<DashboardOption[]>([]);
   const [users, setUsers] = useState<DashboardOption[]>([]);
 
-  const loadDashboard = useCallback(async (filters: DashboardFilterState) => {
+  const loadDashboard = useCallback(async (filters: DashboardFilterState, signal?: AbortSignal) => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await customerDashboardService.getCustomerDashboard(buildDashboardParams(filters));
+      const response = await customerDashboardService.getCustomerDashboard(buildDashboardParams(filters), signal);
       setData(response);
     } catch (err) {
+      // Request superada por un re-disparo del efecto (filtros/t cambio de identidad):
+      // no es error, la nueva petición sigue en curso.
+      if (signal?.aborted || (err as { code?: string })?.code === 'ERR_CANCELED') return;
       console.error('Error loading customer dashboard:', err);
       setError(t('dashboard.error') || 'Falha ao carregar dashboard');
     } finally {
-      setLoading(false);
+      if (!signal?.aborted) setLoading(false);
     }
   }, [t]);
 
   useEffect(() => {
-    loadDashboard(appliedFilters);
+    const controller = new AbortController();
+    loadDashboard(appliedFilters, controller.signal);
+    return () => controller.abort();
   }, [appliedFilters, loadDashboard]);
 
   useEffect(() => {
