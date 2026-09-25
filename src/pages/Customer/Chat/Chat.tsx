@@ -258,6 +258,16 @@ const Chat = () => {
       return;
     }
 
+    // FIX recarga de lista al seleccionar/cerrar: navegar entre /conversations
+    // y /conversations/:id re-ejecuta este efecto; si la lista ya tiene datos
+    // o hay una carga en curso, no refetchear (solo mensajes del chat cambian).
+    if (
+      conversations.state.conversations.length > 0 ||
+      conversations.state.conversationsLoading
+    ) {
+      return;
+    }
+
     // 💾 PERSISTÊNCIA: Carregar filtros salvos ou usar padrão
     const savedFilters = loadConversationFilters();
     const filtersToApply = savedFilters || getDefaultFilter();
