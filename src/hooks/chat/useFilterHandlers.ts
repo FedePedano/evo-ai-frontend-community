@@ -3,7 +3,7 @@ import { useChatContext } from '@/contexts/chat/ChatContext';
 import { DEFAULT_FILTER } from '@/contexts/chat/FiltersContext';
 import { BaseFilter } from '@/types/core';
 import { convertBaseFiltersToConversationFilters } from '@/utils/chat/filterAdapters';
-import { saveConversationFilters, clearConversationFilters } from '@/utils/storage/filtersStorage';
+import { clearConversationFilters } from '@/utils/storage/filtersStorage';
 
 export const useFilterHandlers = () => {
   const { conversations, filters } = useChatContext();
@@ -20,8 +20,7 @@ export const useFilterHandlers = () => {
             // Atualizar o estado das conversas com os resultados do filtro
             conversations.setConversations(conversationsResult, pagination, query);
 
-            // 💾 PERSISTIR: Salvar filtros aplicados no localStorage
-            saveConversationFilters(newFilters);
+            // Filtros não persistem (decisão UX): sem save em localStorage.
             resolve();
           },
           error => {

@@ -13,7 +13,7 @@ import { useConversationHandlers } from '@/hooks/chat/useConversationHandlers';
 import { useAssignmentHandlers } from '@/hooks/chat/useAssignmentHandlers';
 import { useFilterHandlers } from '@/hooks/chat/useFilterHandlers';
 
-import { loadConversationFilters, getDefaultFilter } from '@/utils/storage/filtersStorage';
+import { clearConversationFilters, getDefaultFilter } from '@/utils/storage/filtersStorage';
 import { CONVERSATION_SEGMENTS } from '@/components/chat/chat-sidebar/conversationSegmentsHelpers';
 
 import { toast } from 'sonner';
@@ -268,9 +268,10 @@ const Chat = () => {
       return;
     }
 
-    // 💾 PERSISTÊNCIA: Carregar filtros salvos ou usar padrão
-    const savedFilters = loadConversationFilters();
-    const filtersToApply = savedFilters || getDefaultFilter();
+    // Filtros NÃO persistem: cada entrada arranca en "Todas". Se limpia cualquier
+    // resto legacy (v1/v2) para no prender al usuario en un filtro viejo invisible.
+    clearConversationFilters();
+    const filtersToApply = getDefaultFilter();
 
     // Aplicar filtros (erros serão tratados no filterHandlers)
     handleApplyFilters(filtersToApply).catch(error => {
