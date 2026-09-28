@@ -4,10 +4,10 @@
   </a>
 </p>
 
-<h1 align="center">Evo CRM Frontend</h1>
+<h1 align="center">Beexa Frontend</h1>
 
 <p align="center">
-  Modern web interface for the Evo CRM Community — built with React, TypeScript and Vite.
+  Modern web interface for the Beexa Community — built with React, TypeScript and Vite.
 </p>
 
 <p align="center">
@@ -28,13 +28,13 @@
 
 ## About
 
-**Evo CRM Frontend** is the web interface of the Evo CRM Community — a modern React application providing the full user experience for conversations, contacts, agents, channels, automations, reports, and settings.
+**Beexa Frontend** is the web interface of the Beexa Community — a modern React application providing the full user experience for conversations, contacts, agents, channels, automations, reports, and settings.
 
-Built with React 19, TypeScript, Vite, TailwindCSS 4 and an in-house design system, it delivers a fast, accessible, dark-mode-first experience aligned with the Evo CRM visual identity.
+Built with React 19, TypeScript, Vite, TailwindCSS 4 and an in-house design system, it delivers a fast, accessible, dark-mode-first experience aligned with the Beexa visual identity.
 
-## Part of the Evo CRM Community
+## Part of the Beexa Community
 
-Evo CRM Frontend is part of the [Evo CRM Community](https://github.com/evolution-foundation/evo-crm-community) ecosystem maintained by Evolution Foundation. To use the full stack, clone the umbrella repository with submodules:
+Beexa Frontend is part of the [Beexa Community](https://github.com/evolution-foundation/evo-crm-community) ecosystem maintained by Evolution Foundation. To use the full stack, clone the umbrella repository with submodules:
 
 ```bash
 git clone --recurse-submodules git@github.com:evolution-foundation/evo-crm-community.git
@@ -69,7 +69,7 @@ The Community Edition is **single-tenant** by design — one account, no multi-t
 
 - **Node.js** 18+
 - **pnpm** 8+
-- **Evo CRM Backend** (`evo-ai-crm-community`) running
+- **Beexa Backend** (`evo-ai-crm-community`) running
 
 ### Installation
 
@@ -203,11 +203,11 @@ For security issues, **do not open a public issue**. Email **suporte@evofoundati
 
 ## License
 
-Evo CRM Frontend is licensed under the Apache License 2.0, with additional brand-protection conditions. See [LICENSE](./LICENSE) for details.
+Beexa Frontend is licensed under the Apache License 2.0, with additional brand-protection conditions. See [LICENSE](./LICENSE) for details.
 
 ## Trademarks
 
-"Evolution Foundation", "Evolution" and "Evo CRM Frontend" are trademarks of Evolution Foundation. See [TRADEMARKS.md](./TRADEMARKS.md) for the brand assets policy.
+"Evolution Foundation", "Evolution" and "Beexa Frontend" are trademarks of Evolution Foundation. See [TRADEMARKS.md](./TRADEMARKS.md) for the brand assets policy.
 
 Third-party attributions are documented in [NOTICE](./NOTICE).
 

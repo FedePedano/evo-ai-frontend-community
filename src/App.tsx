@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, type CSSProperties } from 'react';
 import AppRouter from './routes';
 import { AuthProvider } from './contexts/AuthContext';
 import { DarkModeProvider } from './contexts/ThemeContext';
@@ -15,6 +15,32 @@ import { Toaster } from '@evoapi/design-system';
 
 import { useIsDarkClass } from '@/hooks/chat/useIsDarkClass';
 
+// Sonner with `richColors` reads these CSS vars. Passing `style` to the
+// design-system Toaster REPLACES its defaults (it spreads props last), so the
+// --normal-* trio has to be restated here or the toast loses its surface.
+// `as CSSProperties` is required: @types/react 19 dropped the index signature
+// on CSSProperties, so the literal's `--*` keys trip the excess-property check.
+const toasterStyle = {
+  // Cera Oscura (#2A2A2A) in dark, white in light. Deliberately --card and not
+  // --popover: the design-system ships --popover as oklch(0.145 0 0) ≈ #252525,
+  // which is darker than the brand's Cera Oscura.
+  '--normal-bg': 'var(--card)',
+  '--normal-text': 'var(--popover-foreground)',
+  '--normal-border': 'var(--border)',
+
+  // Success: solid Miel Ámbar with Negro Colmena text (≈13.5:1).
+  '--success-bg': 'var(--bee-honey)',
+  '--success-text': '#0A0A0A',
+  '--success-border': 'var(--bee-honey)',
+
+  // Warning: outlined, not filled. A filled amber warning is pixel-identical to
+  // a filled amber success, so the two would be indistinguishable. --bee-alert
+  // is the contrast-checked amber: 5.02:1 on white, 5.92:1 on Cera Oscura.
+  '--warning-bg': 'var(--card)',
+  '--warning-text': 'var(--bee-alert)',
+  '--warning-border': 'var(--bee-honey)',
+} as CSSProperties;
+
 // Componente wrapper para o Toaster que usa o contexto de tema
 function ThemedToaster() {
   const isDark = useIsDarkClass();
@@ -26,6 +52,7 @@ function ThemedToaster() {
       closeButton
       duration={2000}
       theme={isDark ? 'dark' : 'light'}
+      style={toasterStyle}
     />
   );
 }

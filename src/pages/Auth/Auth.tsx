@@ -24,18 +24,53 @@ import { useAuthStore } from '@/store/authStore';
 import { useRecaptcha } from '@/hooks/useRecaptcha';
 import { useLanguage } from '@/hooks/useLanguage';
 import MfaVerification from '@/components/auth/MfaVerification';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { twoFactorService } from '@/services/profile/twoFactorService';
 
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertCircle, Globe } from 'lucide-react';
+import { AlertCircle, Globe, Loader2 } from 'lucide-react';
 
 import { ApiError } from '@/types/auth';
 import { type Locale } from '@/i18n/config';
 import { useGlobalConfig } from '@/contexts/GlobalConfigContext';
 
-import { AppLogo } from '@/components/AppLogo';
+import logoBeexa from '@/assets/logo-beexa.png';
+
+// Anel de foco amarelo para navegação por teclado. O offset na cor da superfície
+// immediately adjacente é necessário porque os botões de submit já são amarelos:
+// sem ele o anel se fundiria com o próprio botão (contraste insuficiente em
+// WCAG 2.2). Há duas variantes: uma para controles sobre a tarjeta e outra para
+// o que vive diretamente sobre o fundo da tela.
+const focusRingBase =
+  'focus-visible:border-bee-yellow focus-visible:ring-2 focus-visible:ring-bee-yellow focus-visible:ring-offset-2';
+const focusRing = `${focusRingBase} focus-visible:ring-offset-white dark:focus-visible:ring-offset-bee-hive-black`;
+const focusRingOnPage = `${focusRingBase} focus-visible:ring-offset-[#F5F5F5] dark:focus-visible:ring-offset-bee-hive-black`;
+
+// Transições suaves para hovers e mudanças de estado do anel de foco.
+const smoothTransition = 'transition-all duration-200';
+
+// A tela respeita o tema da aplicação: cada surface tem par explícito
+// light/dark. O par `dark:` é obrigatório porque o design system aplica
+// `dark:bg-input/30`, `dark:text-muted-foreground`,
+// `dark:data-[state=active]:bg-input/30`… que de outro modo venceriam por
+// ordem da folha de estilos.
+const tabTrigger = `${smoothTransition} ${focusRing} text-[#525252] dark:text-[#9A9A9A] hover:text-[#0A0A0A] dark:hover:text-white data-[state=active]:border-transparent dark:data-[state=active]:border-transparent data-[state=active]:bg-white dark:data-[state=active]:bg-bee-hive-black data-[state=active]:text-[#0A0A0A] dark:data-[state=active]:text-white`;
+
+// Inputs: en light el borde sube a #D4D4D4 para separar el campo de la tarjeta
+// blanca; en dark conserva Cera (#2D2D2D) sobre Cera Muy Oscura (#121212).
+const inputField = `${smoothTransition} ${focusRing} rounded-md bg-white dark:bg-[#121212] border-[#D4D4D4] dark:border-[#2D2D2D] text-[#171717] dark:text-[#EDEDED] placeholder:text-gray-500 dark:placeholder:text-gray-400`;
+
+// Superficie de los controles del rincón superior derecho (idioma + tema).
+// `hover:bg-input/50` del design system se neutraliza para que el hover no
+// mezcle un verde/gris del token con la superficie negra.
+const topControl = `${smoothTransition} ${focusRingOnPage} rounded-md bg-white dark:bg-[#121212] dark:hover:bg-[#1A1A1A] border-[#D4D4D4] dark:border-[#2D2D2D] text-[#171717] dark:text-[#EDEDED]`;
+
+// Amarillo Abeja -> Negro Colmena (12.69:1). En hover pasa a Miel Ámbar (#E8933A),
+// que sigue siendo legible con el texto negro. El botón no cambia con el tema:
+// la marca es la misma en claro y oscuro.
+const primaryButton = `w-full bg-bee-yellow text-bee-hive-black hover:bg-bee-honey font-semibold hover:shadow-md active:scale-[0.98] disabled:opacity-50 ${smoothTransition} ${focusRing}`;
 
 export const Auth: React.FC = () => {
   const { login: authLogin, mfaState, verifyMfaCode, clearMfaState, setMfaRequired } = useAuth();
@@ -410,13 +445,23 @@ export const Auth: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-t from-primary/20 via-background/95 to-background relative">
-      <div className="flex-1 flex items-center justify-center p-4">
-        {/* Seletor de idiomas no canto superior direito */}
-        <div className="absolute top-4 right-4 z-10">
+    <div className="min-h-screen flex flex-col bg-[#F5F5F5] dark:bg-bee-hive-black relative">
+      {/* Resplandor inferior en Miel Ámbar, muy tenue (máx. 14% alpha). Sobre
+          #F5F5F5 queda como un crema cálido, sobre #0A0A0A como un halo. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[75vh]"
+        style={{
+          background:
+            'radial-gradient(120% 100% at 50% 100%, rgba(232, 147, 58, 0.14) 0%, rgba(232, 147, 58, 0.05) 38%, rgba(10, 10, 10, 0) 72%)',
+        }}
+      />
+      <div className="relative flex-1 flex items-center justify-center p-4">
+        {/* Seletor de idiomas + conmutador de tema no canto superior direito */}
+        <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
           <Select value={currentLanguage} onValueChange={handleLanguageChange}>
-            <SelectTrigger>
-              <Globe className="h-4 w-4 text-primary" />
+            <SelectTrigger className={topControl}>
+              <Globe className="h-4 w-4 text-[#B45309] dark:text-bee-yellow" />
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -427,23 +472,38 @@ export const Auth: React.FC = () => {
               <SelectItem value="it">{t('language.selector.italian')}</SelectItem>
             </SelectContent>
           </Select>
+          <ThemeToggle className={`h-9 w-9 border ${topControl}`} />
         </div>
 
         <div className="w-full max-w-md space-y-6">
-          {/* Logo */}
-          <div className="text-center">
-            <AppLogo className="h-10 mx-auto" />
+          {/* Logo flotante: PNG con alfa real, sin recuadro ni fondo */}
+          <div className="flex justify-center">
+            <img
+              src={logoBeexa}
+              alt="Beexa"
+              className="h-14 w-auto object-contain"
+            />
           </div>
 
           {/* Formulário */}
-          <div className="bg-background/80 backdrop-blur-sm border rounded-lg p-6 shadow-lg">
+          <div className="bg-white dark:bg-bee-hive-black border border-[#E5E5E5] dark:border-[#222222] rounded-lg p-6">
             <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-              <TabsList className={`grid w-full ${enableAccountSignup ? 'grid-cols-3' : 'grid-cols-2'}`}>
-                <TabsTrigger value="login">{t('auth.tabs.login')}</TabsTrigger>
+              <TabsList
+                className={`grid w-full bg-[#F0F0F0] dark:bg-[#1A1A1A] border border-[#E5E5E5] dark:border-[#222222] ${
+                  enableAccountSignup ? 'grid-cols-3' : 'grid-cols-2'
+                }`}
+              >
+                <TabsTrigger value="login" className={tabTrigger}>
+                  {t('auth.tabs.login')}
+                </TabsTrigger>
                 {enableAccountSignup && (
-                  <TabsTrigger value="register">{t('auth.tabs.register')}</TabsTrigger>
+                  <TabsTrigger value="register" className={tabTrigger}>
+                    {t('auth.tabs.register')}
+                  </TabsTrigger>
                 )}
-                <TabsTrigger value="forgot">{t('auth.tabs.forgot')}</TabsTrigger>
+                <TabsTrigger value="forgot" className={tabTrigger}>
+                  {t('auth.tabs.forgot')}
+                </TabsTrigger>
               </TabsList>
 
               {/* Aba de Login */}
@@ -455,7 +515,7 @@ export const Auth: React.FC = () => {
 
                 {/* Mostrar mensagem de erro da aba login */}
                 {loginError && (
-                  <Alert variant="destructive" className="mb-4">
+                  <Alert variant="destructive" className="mb-4 text-bee-alert">
                     <AlertCircle className="h-4 w-4" />
                     <AlertTitle>{t('auth.errors.title')}</AlertTitle>
                     <AlertDescription>{loginError}</AlertDescription>
@@ -470,10 +530,11 @@ export const Auth: React.FC = () => {
                       type="email"
                       placeholder={t('auth.login.email')}
                       disabled={isLoading}
+                      className={inputField}
                       {...loginForm.register('email')}
                     />
                     {loginForm.formState.errors.email && (
-                      <p className="text-destructive text-sm">
+                      <p className="text-bee-alert text-sm">
                         {loginForm.formState.errors.email.message}
                       </p>
                     )}
@@ -486,10 +547,11 @@ export const Auth: React.FC = () => {
                       type="password"
                       placeholder={t('auth.login.password')}
                       disabled={isLoading}
+                      className={inputField}
                       {...loginForm.register('password')}
                     />
                     {loginForm.formState.errors.password && (
-                      <p className="text-destructive text-sm">
+                      <p className="text-bee-alert text-sm">
                         {loginForm.formState.errors.password.message}
                       </p>
                     )}
@@ -499,7 +561,13 @@ export const Auth: React.FC = () => {
                     <p>{t('auth.login.protectedByRecaptcha')}</p>
                   </div>
 
-                  <Button type="submit" disabled={isLoading} className="w-full">
+                  <Button
+                    type="submit"
+                    disabled={isLoading}
+                    aria-busy={isLoading}
+                    className={primaryButton}
+                  >
+                    {isLoading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
                     {isLoading ? t('auth.login.signingIn') : t('auth.login.signIn')}
                   </Button>
                 </form>
@@ -508,7 +576,7 @@ export const Auth: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setActiveTab('forgot')}
-                    className="text-sm text-primary hover:underline"
+                    className={`rounded-sm text-sm font-medium text-[#B45309] dark:text-bee-yellow hover:text-[#8A3F07] dark:hover:text-bee-honey hover:underline underline-offset-4 ${smoothTransition} ${focusRing}`}
                   >
                     {t('auth.login.forgotPasswordLink')}
                   </button>
@@ -525,7 +593,7 @@ export const Auth: React.FC = () => {
 
                   {/* Mostrar mensagem de erro da aba cadastro */}
                   {registerError && (
-                    <Alert variant="destructive" className="mb-4">
+                    <Alert variant="destructive" className="mb-4 text-bee-alert">
                       <AlertCircle className="h-4 w-4" />
                       <AlertTitle>{t('auth.errors.title')}</AlertTitle>
                       <AlertDescription>{registerError}</AlertDescription>
@@ -540,10 +608,11 @@ export const Auth: React.FC = () => {
                         type="text"
                         placeholder={t('auth.register.fullName')}
                         disabled={isLoading}
+                        className={inputField}
                         {...registerForm.register('fullName')}
                       />
                       {registerForm.formState.errors.fullName && (
-                        <p className="text-destructive text-sm">
+                        <p className="text-bee-alert text-sm">
                           {registerForm.formState.errors.fullName.message}
                         </p>
                       )}
@@ -556,10 +625,11 @@ export const Auth: React.FC = () => {
                         type="email"
                         placeholder={t('auth.register.email')}
                         disabled={isLoading}
+                        className={inputField}
                         {...registerForm.register('email')}
                       />
                       {registerForm.formState.errors.email && (
-                        <p className="text-destructive text-sm">
+                        <p className="text-bee-alert text-sm">
                           {registerForm.formState.errors.email.message}
                         </p>
                       )}
@@ -572,10 +642,11 @@ export const Auth: React.FC = () => {
                         type="password"
                         placeholder={t('auth.register.password')}
                         disabled={isLoading}
+                        className={inputField}
                         {...registerForm.register('password')}
                       />
                       {registerForm.formState.errors.password && (
-                        <p className="text-destructive text-xs">
+                        <p className="text-bee-alert text-sm">
                           {registerForm.formState.errors.password.message}
                         </p>
                       )}
@@ -590,10 +661,11 @@ export const Auth: React.FC = () => {
                         type="password"
                         placeholder={t('auth.register.confirmPassword')}
                         disabled={isLoading}
+                        className={inputField}
                         {...registerForm.register('confirmPassword')}
                       />
                       {registerForm.formState.errors.confirmPassword && (
-                        <p className="text-destructive text-sm">
+                        <p className="text-bee-alert text-sm">
                           {registerForm.formState.errors.confirmPassword.message}
                         </p>
                       )}
@@ -603,7 +675,13 @@ export const Auth: React.FC = () => {
                       <p>{t('auth.register.protectedByRecaptcha')}</p>
                     </div>
 
-                    <Button type="submit" disabled={isLoading} className="w-full">
+                    <Button
+                      type="submit"
+                      disabled={isLoading}
+                      aria-busy={isLoading}
+                      className={primaryButton}
+                    >
+                      {isLoading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
                       {isLoading ? t('auth.register.registering') : t('auth.register.createAccount')}
                     </Button>
                   </form>
@@ -619,7 +697,7 @@ export const Auth: React.FC = () => {
 
                 {/* Mostrar mensagem de erro da aba recuperação */}
                 {forgotPasswordError && (
-                  <Alert variant="destructive" className="mb-4">
+                  <Alert variant="destructive" className="mb-4 text-bee-alert">
                     <AlertCircle className="h-4 w-4" />
                     <AlertTitle>{t('auth.errors.title')}</AlertTitle>
                     <AlertDescription>{forgotPasswordError}</AlertDescription>
@@ -638,10 +716,11 @@ export const Auth: React.FC = () => {
                         type="email"
                         placeholder={t('auth.forgotPassword.email')}
                         disabled={isLoading}
+                        className={inputField}
                         {...forgotPasswordForm.register('email')}
                       />
                       {forgotPasswordForm.formState.errors.email && (
-                        <p className="text-destructive text-sm">
+                        <p className="text-bee-alert text-sm">
                           {forgotPasswordForm.formState.errors.email.message}
                         </p>
                       )}
@@ -651,7 +730,13 @@ export const Auth: React.FC = () => {
                       <p>{t('auth.forgotPassword.protectedByRecaptcha')}</p>
                     </div>
 
-                    <Button type="submit" disabled={isLoading} className="w-full">
+                    <Button
+                      type="submit"
+                      disabled={isLoading}
+                      aria-busy={isLoading}
+                      className={primaryButton}
+                    >
+                      {isLoading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
                       {isLoading
                         ? t('auth.forgotPassword.sending')
                         : t('auth.forgotPassword.sendInstructions')}

@@ -156,7 +156,6 @@ describe('BaseNodePanel', () => {
   });
 
   it('nodes are absent from the panel when a different category is active', async () => {
-    const user = userEvent.setup();
     render(<BaseNodePanel nodeTypes={nodeTypes} categories={categories} defaultCategory="communication" />);
     expect(screen.getByText('Send Message')).toBeTruthy();
     expect(screen.queryByText('Wait')).toBeNull();

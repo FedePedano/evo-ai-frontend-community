@@ -3,7 +3,15 @@ import { Sun, Moon } from 'lucide-react';
 import { Button, Tooltip, TooltipContent, TooltipTrigger } from '@evoapi/design-system';
 import { useDarkMode } from '../hooks/useDarkMode';
 
-export function ThemeToggle() {
+// `className` permite que cada pantalla alinee el toggle con sus controles
+// vecinos (p.ej. el selector de idioma en Auth). Se combina con las clases
+// base mediante twMerge, que usa el design system, de modo que lo pasado aquí
+// pisa a los valores por defecto.
+type ThemeToggleProps = {
+  className?: string;
+};
+
+export function ThemeToggle({ className }: ThemeToggleProps = {}) {
   const { t } = useLanguage('common');
   const { toggleTheme } = useDarkMode();
 
@@ -14,7 +22,7 @@ export function ThemeToggle() {
           variant="ghost"
           size="sm"
           onClick={toggleTheme}
-          className="h-8 w-8 p-0 hover:bg-neutral-surface-highlight cursor-pointer"
+          className={`h-8 w-8 p-0 hover:bg-neutral-surface-highlight cursor-pointer ${className ?? ''}`}
           aria-label={t('base.theme.toggle')}
         >
           {/* Mostra lua no light */}

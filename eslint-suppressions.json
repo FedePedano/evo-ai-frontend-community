@@ -123,11 +123,6 @@
       "count": 2
     }
   },
-  "src/components/base/BaseNodePanel.spec.tsx": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
-    }
-  },
   "src/components/base/BaseTable.tsx": {
     "@typescript-eslint/no-explicit-any": {
       "count": 1
@@ -1005,11 +1000,6 @@
   "src/pages/Admin/Settings/OpenAIConfig.tsx": {
     "@typescript-eslint/no-unused-vars": {
       "count": 2
-    }
-  },
-  "src/pages/Admin/Settings/SocialLoginConfig.spec.tsx": {
-    "@typescript-eslint/no-unused-vars": {
-      "count": 1
     }
   },
   "src/pages/Customer/Agents/Agent/AgentEditPage.tsx": {

@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import React from 'react';
 import RouterGuard from './RouterGuard';
 
 // CRM-164. The guard turns a failed permission load into a panel instead of a

@@ -41,6 +41,22 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
+  /* Beexa brand palette — raw brand colours exposed as Tailwind utilities
+     (e.g. `bg-bee-yellow`, `hover:bg-bee-honey`, `border-bee-dark-wax`).
+     Because this block uses `@theme inline`, Tailwind INLINES these values
+     into the generated utilities and does NOT emit `--color-bee-*` variables
+     on :root. The semantic shadcn tokens below (--primary, --background,
+     --card, …) are therefore re-pointed at the same literals inside the
+     :root / .dark blocks further down the file. */
+  --color-bee-yellow: #FFC72C; /* Amarillo Abeja — primary */
+  --color-bee-honey: #E8933A; /* Miel Ámbar — primary hover */
+  --color-bee-hive-black: #0A0A0A; /* Negro Colmena — dark background */
+  --color-bee-dark-wax: #2A2A2A; /* Cera Oscura — dark cards */
+  /* Validation/alert text. Unlike the four values above this one is NOT a
+     literal: it resolves per theme so it can stay legible on both the light
+     card (#fff) and the dark card (Cera Oscura). Values live in :root / .dark. */
+  --color-bee-alert: var(--bee-alert);
+
   /* Flow Builder design system (EVO-1253) — scoped to the journey/_ui surface.
      Light and dark values live in :root and .dark blocks below this @theme. */
   --color-flow-node-trigger-bg: var(--flow-node-trigger-bg);
@@ -143,6 +159,30 @@
   --flow-feedback-success-bg: oklch(0.95 0.05 150);
   --flow-feedback-success-fg: oklch(0.30 0.12 150);
   --flow-feedback-success-border: oklch(0.70 0.13 150);
+
+  /* Beexa brand tokens — LIGHT mode.
+     These override the shadcn defaults shipped by @evoapi/design-system/styles
+     (primary was a green, oklch(67.35% 0.153 159.64)). globals.css is imported
+     after the package CSS in main.tsx and both blocks are unlayered `:root`
+     rules, so equal specificity + later source order makes these win.
+     Values are literals, not var(--color-bee-*): `@theme inline` does not emit
+     those variables on :root (see the @theme block above). */
+  --primary: #FFC72C; /* Amarillo Abeja */
+  /* Amarillo Abeja is a light colour (relative luminance ≈0.62), so the
+     near-white default foreground would only reach ~1.6:1 contrast.
+     Negro Colmena gives ≈13.5:1, which also keeps the ~260 `bg-primary`
+     surfaces across the app legible. */
+  --primary-foreground: #0A0A0A; /* Negro Colmena */
+
+  /* Beexa alert text — LIGHT mode. Must be DEEP on a white card: Miel Ámbar
+     only reaches 2.42:1 on #fff, so light mode uses a deeper amber (5.02:1). */
+  --bee-alert: #B45309;
+
+  /* Miel Ámbar as a real runtime variable. `@theme inline` does not emit
+     --color-bee-* (see above), so anything outside a Tailwind utility — the
+     sonner CSS vars in App.tsx, inline styles — must read this. Same amber in
+     both modes, so it only needs declaring once. */
+  --bee-honey: #E8933A;
 }
 
 .dark {
@@ -195,6 +235,17 @@
   --flow-feedback-success-bg: oklch(0.22 0.05 150);
   --flow-feedback-success-fg: oklch(0.90 0.10 150);
   --flow-feedback-success-border: oklch(0.45 0.12 150);
+
+  /* Beexa brand tokens — DARK mode.
+     Overrides the shadcn dark defaults (background/card were both
+     oklch(0.145 0 0), primary was oklch(88.18% 0.202 159.34)). */
+  --background: #0A0A0A; /* Negro Colmena — main dark background */
+  --card: #2A2A2A; /* Cera Oscura — dark cards */
+  --primary: #FFC72C; /* Amarillo Abeja */
+  --primary-foreground: #0A0A0A; /* Negro Colmena */
+  /* Beexa alert text — DARK mode. Miel Ámbar on Cera Oscura: 5.92:1, versus
+     1.43:1 for the shadcn dark --destructive (#82181a) that it replaces. */
+  --bee-alert: #E8933A;
 }
 
 @layer base {
@@ -210,8 +261,27 @@
     overflow: hidden;
   }
 
+  /* `body` owns the per-mode surface. `<html>` is NOT given a colour here: it
+     carries an inline #0A0A0A in index.html to cover the pre-CSS paint, and an
+     inline declaration outranks this stylesheet, so a token here would be dead
+     code. body is height:100% and paints over it in both modes. */
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Native UI (scrollbars, form controls, caret) must follow the *app* theme,
+     not the OS: ThemeContext toggles `.dark`/`.light` on <html> from
+     localStorage, so prefers-color-scheme alone would be wrong. */
+  :root {
+    color-scheme: light;
+  }
+
+  .light {
+    color-scheme: light;
+  }
+
+  .dark {
+    color-scheme: dark;
   }
 
   #root {
