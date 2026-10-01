@@ -14,7 +14,10 @@
       "viewStats": "Ver estadísticas",
       "duplicate": "Duplicar",
       "edit": "Editar campaña",
-      "delete": "Eliminar campaña"
+      "delete": "Eliminar campaña",
+      "cancel": "Cancelar campaña",
+      "start": "Iniciar campaña",
+      "stop": "Detener campaña"
     }
   },
   "header": {
@@ -67,7 +70,14 @@
     "statsInDevelopment": "Estadísticas de campañas en desarrollo",
     "bulkDuplicateInDevelopment": "Duplicación masiva de campañas en desarrollo",
     "filtersInDevelopment": "Filtros de campañas en desarrollo",
-    "invalidDate": "Fecha inválida"
+    "invalidDate": "Fecha inválida",
+    "detailsError": "Error al cargar los detalles de la campaña",
+    "editValidationError": "El título y el nombre de la campaña son obligatorios",
+    "startError": "Error al iniciar la campaña",
+    "startSuccess": "Campaña iniciada con éxito",
+    "statsError": "Error al cargar las estadísticas de la campaña",
+    "stopError": "Error al detener la campaña",
+    "stopSuccess": "Campaña detenida con éxito"
   },
   "dialog": {
     "deleteCampaign": {
@@ -83,6 +93,52 @@
       "confirm": "Eliminar Todas",
       "cancel": "Cancelar",
       "deleting": "Eliminando..."
+    },
+    "details": {
+      "title": "Detalles de la campaña",
+      "description": "Datos de la campaña \"{{name}}\".",
+      "descriptionEmpty": "Datos de la campaña.",
+      "loading": "Cargando detalles...",
+      "fields": {
+        "title": "Título",
+        "name": "Nombre interno",
+        "description": "Descripción",
+        "status": "Estado",
+        "channel": "Canal"
+      },
+      "edit": "Editar",
+      "close": "Cerrar"
+    },
+    "stats": {
+      "title": "Estadísticas de la campaña",
+      "description": "Resumen de rendimiento de la campaña \"{{name}}\".",
+      "descriptionEmpty": "Resumen de rendimiento de la campaña.",
+      "loading": "Cargando estadísticas...",
+      "totalSent": "Total enviados",
+      "totalDelivered": "Total entregados",
+      "totalRead": "Total leídos",
+      "totalErrors": "Total de errores",
+      "deliveryRate": "Tasa de entrega",
+      "readRate": "Tasa de lectura",
+      "actions": {
+        "start": "Iniciar",
+        "pause": "Pausar",
+        "cancel": "Cancelar",
+        "resume": "Reanudar"
+      },
+      "close": "Cerrar"
+    },
+    "editCampaign": {
+      "title": "Editar campaña",
+      "description": "Actualice los datos básicos de la campaña.",
+      "fields": {
+        "title": "Título",
+        "name": "Nombre interno",
+        "description": "Descripción"
+      },
+      "confirm": "Guardar cambios",
+      "cancel": "Cancelar",
+      "saving": "Guardando..."
     }
   },
   "status": {
@@ -111,7 +167,8 @@
       "contacts": "Contactos",
       "delivery": "Entrega",
       "engagement": "Interacción",
-      "created": "Creado"
+      "created": "Creado",
+      "quickActions": "Acciones rápidas"
     },
     "sent": "enviados",
     "delivered": "entregados",
@@ -141,7 +198,13 @@
       "contactSelectionRequired": "Seleccione una opción",
       "scheduleOptionRequired": "Seleccione una opción",
       "scheduleDateRequired": "Fecha y hora son obligatorias",
-      "scheduleDateFuture": "La fecha debe ser futura"
+      "scheduleDateFuture": "La fecha debe ser futura",
+      "triggerConfigRequired": "La configuración de disparador es obligatoria para campañas con disparador",
+      "triggerEventNameRequired": "El nombre del evento es obligatorio para disparadores de tipo evento",
+      "triggerSegmentRequired": "El segmento es obligatorio para disparadores de tipo segmento",
+      "triggerLabelRequired": "La etiqueta es obligatoria para disparadores de tipo etiqueta",
+      "triggerCustomAttributeRequired": "El atributo personalizado es obligatorio para disparadores de tipo atributo",
+      "triggerWebhookUrlRequired": "La URL del webhook es obligatoria para disparadores de tipo webhook"
     },
     "progress": {
       "basicInfo": "Información Básica",
@@ -161,7 +224,10 @@
       "typeLabel": "Tipo de Campaña",
       "typePlaceholder": "Seleccione el tipo",
       "channelLabel": "Canal de Comunicación",
-      "channelPlaceholder": "Seleccione el canal"
+      "channelPlaceholder": "Seleccione el canal",
+      "descriptionLabel": "Descripción",
+      "descriptionPlaceholder": "Describa brevemente el objetivo de esta campaña...",
+      "optional": "Opcional"
     },
     "step2_inboxes": {
       "title": "Selección de Inboxes",
@@ -214,7 +280,13 @@
       "inboxDescription": "Seleccione solo 1 inbox para esta campaña",
       "health": "salud",
       "templatesLabel": "Plantillas",
-      "templatesSelected": "{{count}} seleccionado(s)"
+      "templatesSelected": "{{count}} seleccionado(s)",
+      "noInboxes": "No hay inboxes disponibles para este canal",
+      "selectInboxFirst": "Seleccione un inbox primero",
+      "noTemplates": "No hay plantillas disponibles para este inbox",
+      "unknown": "Desconocido",
+      "loadingInboxes": "Cargando inboxes...",
+      "loadingTemplates": "Cargando plantillas..."
     },
     "step4": {
       "title": "Configuración",
@@ -264,7 +336,35 @@
       "noLimitDescription": "Sin límite - Enviar lo más rápido posible",
       "hours": "{{count}} horas",
       "hoursDay": "{{count}} horas ({{days}} día)",
-      "hoursDays": "{{count}} horas ({{days}} días)"
+      "hoursDays": "{{count}} horas ({{days}} días)",
+      "sendingStrategy": "Estrategia de envío",
+      "winnerCriteria": "Criterio de ganador",
+      "winnerOpenRate": "Tasa de apertura",
+      "winnerClickRate": "Tasa de clics",
+      "testSample": "Muestra de la prueba",
+      "baseMessage": "Mensaje base: {{value}}%",
+      "winnerRemainder": "Restante (ganador): {{value}}%",
+      "dateTimeTestSuffix": " (Prueba)",
+      "winnerMessage": "Mensaje ganador",
+      "skipWinnerAuto": "No enviar automáticamente",
+      "sendAt": "Enviar en",
+      "advancedOptions": "Opciones avanzadas",
+      "distributionWindow": "Ventana de distribución",
+      "distributionWindowDescription": "Intervalo entre los disparos de la campaña",
+      "noInterval": "Sin intervalo",
+      "spreadMinutes": "{{count}} minutos",
+      "spreadHours": "{{count}} horas",
+      "spreadHourHalf1": "1 hora 30 minutos",
+      "spreadHourHalf2": "2 horas 30 minutos",
+      "autoRetry": "Reintentos automáticos",
+      "autoRetryDescription": "Reintentar el envío en caso de fallo",
+      "weightTotal": "Total",
+      "strategyOptions": {
+        "roundRobin": "Secuencial",
+        "weighted": "Split",
+        "random": "Aleatorio",
+        "abTest": "Prueba A/B"
+      }
     },
     "step5": {
       "title": "Revisar y Confirmar",
@@ -280,7 +380,33 @@
       "inboxCount": "Total de Inboxes",
       "selectedInboxes": "Inboxes seleccionados",
       "contactSelection": "Selección",
-      "scheduleOption": "Opción"
+      "scheduleOption": "Opción",
+      "review": {
+        "name": "Nombre",
+        "description": "Descripción",
+        "channelAndType": "Canal y tipo",
+        "selection": "Selección",
+        "estimatedContacts": "Contactos estimados",
+        "inbox": "Inbox",
+        "inboxSelected": "Inbox seleccionado",
+        "inboxNone": "Ninguno seleccionado",
+        "templates": "Plantillas",
+        "schedule": "Programación",
+        "scheduleNow": "Envío inmediato",
+        "sampleSize": "Tamaño de la muestra",
+        "ofContacts": "{{percentage}}% de los contactos",
+        "testPhase": "Fase de prueba",
+        "testNow": "Inmediato",
+        "winnerSending": "Envío del ganador",
+        "manual": "Manual",
+        "winnerNotAuto": "El ganador no se enviará automáticamente",
+        "sendInterval": "Intervalo de envío",
+        "allowedHours": "Horario permitido",
+        "noTimeRestriction": "Sin restricción de horario",
+        "rateLimitBadge": "Límite de tasa",
+        "retryBadge": "Reintentos activos",
+        "templateWeights": "Pesos por plantilla"
+      }
     },
     "success": {
       "title": "¡Campaña Creada con Éxito!",
@@ -290,12 +416,30 @@
       "step2": "Monitoree las estadísticas de envío e interacción",
       "step3": "Puede pausar o editar la campaña en cualquier momento",
       "backToList": "Volver a Campañas",
-      "viewCampaign": "Ver Campaña"
+      "viewCampaign": "Ver Campaña",
+      "titleUpdated": "¡Campaña actualizada con éxito!",
+      "subtitleUpdated": "Su campaña fue actualizada con éxito.",
+      "continueEditing": "Seguir editando",
+      "newCampaign": "Nueva campaña"
     },
     "actions": {
       "continue": "Continuar",
-      "back": "Atrás",
-      "create": "Crear Campaña"
+      "back": "Volver",
+      "create": "Crear Campaña",
+      "save": "Guardar campaña",
+      "saving": "Guardando..."
+    },
+    "editTitle": "Editar campaña",
+    "steps": {
+      "general": "General",
+      "audience": "Audiencia",
+      "content": "Contenido",
+      "settings": "Configuración",
+      "review": "Revisión"
+    },
+    "trigger": {
+      "title": "Configuración de disparador",
+      "description": "Configure cómo se disparará automáticamente la campaña"
     }
   }
 }

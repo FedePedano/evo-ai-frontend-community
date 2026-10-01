@@ -119,7 +119,8 @@
       "actions": {
         "start": "Start",
         "pause": "Stop",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "resume": "Resume"
       },
       "close": "Close"
     },
@@ -197,7 +198,13 @@
       "contactSelectionRequired": "Select an option",
       "scheduleOptionRequired": "Select an option",
       "scheduleDateRequired": "Date and time are required",
-      "scheduleDateFuture": "Date must be in the future"
+      "scheduleDateFuture": "Date must be in the future",
+      "triggerConfigRequired": "Trigger configuration is required for trigger campaigns",
+      "triggerEventNameRequired": "Event name is required for event triggers",
+      "triggerSegmentRequired": "Segment is required for segment triggers",
+      "triggerLabelRequired": "Label is required for label triggers",
+      "triggerCustomAttributeRequired": "Custom attribute is required for custom attribute triggers",
+      "triggerWebhookUrlRequired": "Webhook URL is required for webhook triggers"
     },
     "progress": {
       "basicInfo": "Basic Info",
@@ -217,7 +224,10 @@
       "typeLabel": "Campaign Type",
       "typePlaceholder": "Select type",
       "channelLabel": "Communication Channel",
-      "channelPlaceholder": "Select channel"
+      "channelPlaceholder": "Select channel",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Briefly describe this campaign's goal...",
+      "optional": "Optional"
     },
     "step2": {
       "title": "Audience",
@@ -246,7 +256,13 @@
       "inboxDescription": "Select only 1 inbox for this campaign",
       "health": "health",
       "templatesLabel": "Templates",
-      "templatesSelected": "{{count}} selected"
+      "templatesSelected": "{{count}} selected",
+      "noInboxes": "No inboxes available for this channel",
+      "selectInboxFirst": "Please select an inbox first",
+      "noTemplates": "No templates available for this inbox",
+      "unknown": "Unknown",
+      "loadingInboxes": "Loading inboxes...",
+      "loadingTemplates": "Loading templates..."
     },
     "step4": {
       "title": "Settings",
@@ -296,13 +312,109 @@
       "noLimitDescription": "No limit - Send as fast as possible",
       "hours": "{{count}} hours",
       "hoursDay": "{{count}} hours ({{days}} day)",
-      "hoursDays": "{{count}} hours ({{days}} days)"
+      "hoursDays": "{{count}} hours ({{days}} days)",
+      "sendingStrategy": "Sending Strategy",
+      "winnerCriteria": "Winner Criteria",
+      "winnerOpenRate": "Open Rate",
+      "winnerClickRate": "Click Rate",
+      "testSample": "Test Sample",
+      "baseMessage": "Base message: {{value}}%",
+      "winnerRemainder": "Remainder (winner): {{value}}%",
+      "dateTimeTestSuffix": " (Test)",
+      "winnerMessage": "Winning Message",
+      "skipWinnerAuto": "Don't send automatically",
+      "sendAt": "Send at",
+      "advancedOptions": "Advanced Options",
+      "distributionWindow": "Distribution Window",
+      "distributionWindowDescription": "Interval between campaign sends",
+      "noInterval": "No interval",
+      "spreadMinutes": "{{count}} minutes",
+      "spreadHours": "{{count}} hours",
+      "spreadHourHalf1": "1 hour 30 minutes",
+      "spreadHourHalf2": "2 hours 30 minutes",
+      "autoRetry": "Automatic Retries",
+      "autoRetryDescription": "Retry sending on failure",
+      "weightTotal": "Total",
+      "strategyOptions": {
+        "roundRobin": "Sequential",
+        "weighted": "Split",
+        "random": "Random",
+        "abTest": "A/B Test"
+      }
     },
     "actions": {
       "continue": "Continue",
       "back": "Back",
       "create": "Create Campaign",
-      "save": "Save Campaign"
+      "save": "Save Campaign",
+      "saving": "Saving..."
+    },
+    "steps": {
+      "general": "General",
+      "audience": "Audience",
+      "content": "Content",
+      "settings": "Settings",
+      "review": "Review"
+    },
+    "trigger": {
+      "title": "Trigger Configuration",
+      "description": "Configure how the campaign will be triggered automatically"
+    },
+    "step5": {
+      "review": {
+        "name": "Name",
+        "description": "Description",
+        "channelAndType": "Channel and type",
+        "selection": "Selection",
+        "estimatedContacts": "Estimated contacts",
+        "inbox": "Inbox",
+        "inboxSelected": "Inbox selected",
+        "inboxNone": "None selected",
+        "templates": "Templates",
+        "schedule": "Scheduling",
+        "scheduleNow": "Send immediately",
+        "sampleSize": "Sample size",
+        "ofContacts": "{{percentage}}% of contacts",
+        "testPhase": "Test Phase",
+        "testNow": "Immediately",
+        "winnerSending": "Winner send",
+        "manual": "Manual",
+        "winnerNotAuto": "Winner won't be sent automatically",
+        "sendInterval": "Send interval",
+        "allowedHours": "Allowed hours",
+        "noTimeRestriction": "No time restriction",
+        "rateLimitBadge": "Rate limit",
+        "retryBadge": "Retries active",
+        "templateWeights": "Weights per template"
+      },
+      "title": "Review and Confirm",
+      "subtitle": "Review all details before creating the campaign",
+      "section": {
+        "basicInfo": "Basic Information",
+        "inboxes": "Sending Channels",
+        "content": "Content",
+        "contacts": "Recipients",
+        "schedule": "Scheduling"
+      },
+      "noContent": "No content defined yet",
+      "inboxCount": "Total Inboxes",
+      "selectedInboxes": "Selected inboxes",
+      "contactSelection": "Selection",
+      "scheduleOption": "Option"
+    },
+    "success": {
+      "titleUpdated": "Campaign updated successfully!",
+      "subtitleUpdated": "Your campaign was updated successfully.",
+      "continueEditing": "Keep editing",
+      "newCampaign": "New Campaign",
+      "title": "Campaign Created Successfully!",
+      "subtitle": "Your campaign has been created and is ready",
+      "nextSteps": "Next Steps",
+      "step1": "Track campaign progress in the dashboard",
+      "step2": "Monitor sending and engagement statistics",
+      "step3": "You can pause or edit the campaign at any time",
+      "backToList": "Back to Campaigns",
+      "viewCampaign": "View Campaign"
     }
   }
 }

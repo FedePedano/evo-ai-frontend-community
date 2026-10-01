@@ -119,7 +119,8 @@
       "actions": {
         "start": "Iniciar",
         "pause": "Parar",
-        "cancel": "Cancelar"
+        "cancel": "Cancelar",
+        "resume": "Retomar"
       },
       "close": "Fechar"
     },
@@ -197,7 +198,13 @@
       "contactSelectionRequired": "Selecione uma opção",
       "scheduleOptionRequired": "Selecione uma opção",
       "scheduleDateRequired": "Data e hora são obrigatórias",
-      "scheduleDateFuture": "Data deve ser no futuro"
+      "scheduleDateFuture": "Data deve ser no futuro",
+      "triggerConfigRequired": "Configuração de trigger é obrigatória para campanhas com gatilho",
+      "triggerEventNameRequired": "Nome do evento é obrigatório para triggers do tipo evento",
+      "triggerSegmentRequired": "Segmento é obrigatório para triggers do tipo segmento",
+      "triggerLabelRequired": "Etiqueta é obrigatória para triggers do tipo etiqueta",
+      "triggerCustomAttributeRequired": "Atributo personalizado é obrigatório para triggers do tipo atributo",
+      "triggerWebhookUrlRequired": "URL do webhook é obrigatória para triggers do tipo webhook"
     },
     "progress": {
       "basicInfo": "Informações Básicas",
@@ -217,7 +224,10 @@
       "typeLabel": "Tipo de Campanha",
       "typePlaceholder": "Selecione o tipo",
       "channelLabel": "Canal de Comunicação",
-      "channelPlaceholder": "Selecione o canal"
+      "channelPlaceholder": "Selecione o canal",
+      "descriptionLabel": "Descrição",
+      "descriptionPlaceholder": "Descreva brevemente o objetivo desta campanha...",
+      "optional": "Opcional"
     },
     "step2": {
       "title": "Audiência",
@@ -246,7 +256,13 @@
       "inboxDescription": "Selecione apenas 1 inbox para esta campanha",
       "health": "saúde",
       "templatesLabel": "Templates",
-      "templatesSelected": "{{count}} selecionado(s)"
+      "templatesSelected": "{{count}} selecionado(s)",
+      "noInboxes": "Nenhum inbox disponível para este canal",
+      "selectInboxFirst": "Selecione um inbox primeiro",
+      "noTemplates": "Nenhum template disponível para este inbox",
+      "unknown": "Desconhecido",
+      "loadingInboxes": "Carregando inboxes...",
+      "loadingTemplates": "Carregando templates..."
     },
     "step4": {
       "title": "Configurações",
@@ -296,13 +312,109 @@
       "noLimitDescription": "Sem limite - Enviar o mais rápido possível",
       "hours": "{{count}} horas",
       "hoursDay": "{{count}} horas ({{days}} dia)",
-      "hoursDays": "{{count}} horas ({{days}} dias)"
+      "hoursDays": "{{count}} horas ({{days}} dias)",
+      "sendingStrategy": "Estratégia de Envio",
+      "winnerCriteria": "Critério de Vencedor",
+      "winnerOpenRate": "Taxa de Abertura",
+      "winnerClickRate": "Taxa de Clique",
+      "testSample": "Amostra do Teste",
+      "baseMessage": "Mensagem Base: {{value}}%",
+      "winnerRemainder": "Restante (Vencedor): {{value}}%",
+      "dateTimeTestSuffix": " (Teste)",
+      "winnerMessage": "Mensagem Vencedora",
+      "skipWinnerAuto": "Não enviar automaticamente",
+      "sendAt": "Enviar em",
+      "advancedOptions": "Opções Avançadas",
+      "distributionWindow": "Janela de Distribuição",
+      "distributionWindowDescription": "Intervalo entre os disparos da campanha",
+      "noInterval": "Sem intervalo",
+      "spreadMinutes": "{{count}} minutos",
+      "spreadHours": "{{count}} horas",
+      "spreadHourHalf1": "1 Hora 30 minutos",
+      "spreadHourHalf2": "2 Horas 30 minutos",
+      "autoRetry": "Tentativas Automáticas",
+      "autoRetryDescription": "Tentar reenviar em caso de falha",
+      "weightTotal": "Total",
+      "strategyOptions": {
+        "roundRobin": "Sequencial",
+        "weighted": "Split",
+        "random": "Aleatório",
+        "abTest": "Teste A/B"
+      }
     },
     "actions": {
       "continue": "Continuar",
       "back": "Voltar",
       "create": "Criar Campanha",
-      "save": "Salvar Campanha"
+      "save": "Salvar Campanha",
+      "saving": "Salvando..."
+    },
+    "steps": {
+      "general": "Geral",
+      "audience": "Audiência",
+      "content": "Conteúdo",
+      "settings": "Configurações",
+      "review": "Revisão"
+    },
+    "trigger": {
+      "title": "Configuração de Trigger",
+      "description": "Configure como a campanha será disparada automaticamente"
+    },
+    "step5": {
+      "review": {
+        "name": "Nome",
+        "description": "Descrição",
+        "channelAndType": "Canal e Tipo",
+        "selection": "Seleção",
+        "estimatedContacts": "Contatos estimados",
+        "inbox": "Inbox",
+        "inboxSelected": "Inbox selecionado",
+        "inboxNone": "Nenhum selecionado",
+        "templates": "Templates",
+        "schedule": "Agendamento",
+        "scheduleNow": "Envio Imediato",
+        "sampleSize": "Tamanho da amostra",
+        "ofContacts": "{{percentage}}% dos contatos",
+        "testPhase": "Fase de Teste",
+        "testNow": "Imediato",
+        "winnerSending": "Envio do Vencedor",
+        "manual": "Manual",
+        "winnerNotAuto": "Vencedor não será enviado automaticamente",
+        "sendInterval": "Intervalo de Envio",
+        "allowedHours": "Horário Permitido",
+        "noTimeRestriction": "Sem restrição de horário",
+        "rateLimitBadge": "Limite de Taxa",
+        "retryBadge": "Retentativas Ativas",
+        "templateWeights": "Pesos por Template"
+      },
+      "title": "Revisar e Confirmar",
+      "subtitle": "Revise todos os detalhes antes de criar a campanha",
+      "section": {
+        "basicInfo": "Informações Básicas",
+        "inboxes": "Canais de Envio",
+        "content": "Conteúdo",
+        "contacts": "Destinatários",
+        "schedule": "Agendamento"
+      },
+      "noContent": "Nenhum conteúdo definido ainda",
+      "inboxCount": "Total de Inboxes",
+      "selectedInboxes": "Inboxes selecionados",
+      "contactSelection": "Seleção",
+      "scheduleOption": "Opção"
+    },
+    "success": {
+      "titleUpdated": "Campanha Atualizada!",
+      "subtitleUpdated": "Sua campanha foi atualizada com sucesso.",
+      "continueEditing": "Continuar editando",
+      "newCampaign": "Nova Campanha",
+      "title": "Campanha Criada com Sucesso!",
+      "subtitle": "Sua campanha foi criada e está pronta",
+      "nextSteps": "Próximos Passos",
+      "step1": "Acompanhe o progresso da campanha no painel",
+      "step2": "Monitorize as estatísticas de envio e envolvimento",
+      "step3": "Pode pausar ou editar a campanha a qualquer momento",
+      "backToList": "Voltar para Campanhas",
+      "viewCampaign": "Ver Campanha"
     }
   }
 }

@@ -236,8 +236,8 @@ const Step2_Audience = ({ data, onChange, onNext, onBack }: Step2Props) => {
   const isValid = useAllContacts || filters.length > 0;
 
   return (
-    <div className="flex flex-col max-w-4xl mx-auto py-6 px-6 h-full">
-      <div className="flex-1 overflow-y-auto min-h-0 px-1">
+    <div className="max-w-4xl mx-auto py-6 px-6">
+      <div className="px-1">
         <div className="w-full space-y-6 max-w-2xl mx-auto pb-4">
           {/* Header */}
           <div>
@@ -379,7 +379,7 @@ const Step2_Audience = ({ data, onChange, onNext, onBack }: Step2Props) => {
         </div>
       </div>
 
-      <div className="flex justify-between flex-shrink-0 pt-4 border-t mt-6">
+      <div className="sticky bottom-0 bg-background flex justify-between pt-4 pb-2 border-t mt-6">
         <Button variant="outline" className="px-6 gap-2" onClick={onBack}>
           <ArrowLeft className="h-4 w-4" />
           {t('wizard.actions.back')}

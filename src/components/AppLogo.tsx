@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import logoBeexa from '../assets/logo-beexa.jpg';
+import logoBeexa from '../assets/logo-beexa.png';
 
 interface AppLogoProps {
   className?: string;

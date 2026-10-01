@@ -134,7 +134,7 @@ const Step3_Content = ({ data, onChange, onNext, onBack }: Step3Props) => {
       case CampaignChannelType.SMS:
         return 'SMS';
       default:
-        return 'Desconhecido';
+        return t('wizard.step3.unknown');
     }
   };
 
@@ -156,9 +156,9 @@ const Step3_Content = ({ data, onChange, onNext, onBack }: Step3Props) => {
   const isValid = !!data.inbox_id && data.template_ids?.length > 0;
 
   return (
-    <div className="flex flex-col max-w-4xl mx-auto py-6 px-6 h-full">
+    <div className="max-w-4xl mx-auto py-6 px-6">
 
-      <div className="flex-1 overflow-y-auto min-h-0 px-1">
+      <div className="px-1">
         <div className="w-full space-y-8 max-w-2xl mx-auto pb-4">
           {/* SECTION 1: Seleção de Canal */}
           <div>
@@ -214,10 +214,10 @@ const Step3_Content = ({ data, onChange, onNext, onBack }: Step3Props) => {
                   {t('wizard.step3.inboxDescription')}
                 </p>
                 {loadingInboxes ? (
-                  <div className="text-center py-4 text-muted-foreground">Loading inboxes...</div>
+                  <div className="text-center py-4 text-muted-foreground">{t('wizard.step3.loadingInboxes')}</div>
                 ) : filteredInboxes.length === 0 ? (
                   <div className="text-center py-4 text-muted-foreground">
-                    {t('wizard.step3.noInboxes', 'No inboxes available for this channel')}
+                    {t('wizard.step3.noInboxes')}
                   </div>
                 ) : (
                   <RadioGroup value={data.inbox_id} onValueChange={handleSelectInbox}>
@@ -280,13 +280,13 @@ const Step3_Content = ({ data, onChange, onNext, onBack }: Step3Props) => {
             <div className="space-y-3">
               {!data.inbox_id ? (
                 <div className="text-center py-8 text-muted-foreground">
-                  {t('wizard.step3.selectInboxFirst', 'Please select an inbox first')}
+                  {t('wizard.step3.selectInboxFirst')}
                 </div>
               ) : loadingTemplates ? (
-                <div className="text-center py-8 text-muted-foreground">Loading templates...</div>
+                <div className="text-center py-8 text-muted-foreground">{t('wizard.step3.loadingTemplates')}</div>
               ) : templates.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
-                  {t('wizard.step3.noTemplates', 'No templates available for this inbox')}
+                  {t('wizard.step3.noTemplates')}
                 </div>
               ) : (
                 templates.map((template) => {
@@ -332,7 +332,7 @@ const Step3_Content = ({ data, onChange, onNext, onBack }: Step3Props) => {
         </div>
       </div>
 
-      <div className="flex justify-between flex-shrink-0 pt-4 border-t mt-6">
+      <div className="sticky bottom-0 bg-background flex justify-between pt-4 pb-2 border-t mt-6">
         <Button variant="outline" className="px-6 gap-2" onClick={onBack}>
           <ArrowLeft className="h-4 w-4" />
           {t('wizard.actions.back')}

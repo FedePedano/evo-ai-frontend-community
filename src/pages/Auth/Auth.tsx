@@ -37,6 +37,7 @@ import { type Locale } from '@/i18n/config';
 import { useGlobalConfig } from '@/contexts/GlobalConfigContext';
 
 import logoBeexa from '@/assets/logo-beexa.png';
+import { BeexaWordmark } from '@/components/BeexaWordmark';
 
 // Anel de foco amarelo para navegação por teclado. O offset na cor da superfície
 // immediately adjacente é necessário porque os botões de submit já são amarelos:
@@ -477,12 +478,13 @@ export const Auth: React.FC = () => {
 
         <div className="w-full max-w-md space-y-6">
           {/* Logo flotante: PNG con alfa real, sin recuadro ni fondo */}
-          <div className="flex justify-center">
+          <div className="flex flex-col items-center gap-2">
             <img
               src={logoBeexa}
               alt="Beexa"
               className="h-14 w-auto object-contain"
             />
+            <BeexaWordmark className="h-10 w-auto text-[#171717] dark:text-white" />
           </div>
 
           {/* Formulário */}

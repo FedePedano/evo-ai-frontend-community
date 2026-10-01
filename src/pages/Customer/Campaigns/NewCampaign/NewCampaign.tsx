@@ -97,11 +97,11 @@ export default function NewCampaign() {
   const [existingSteps, setExistingSteps] = useState<Record<string, any>>({});
 
   const steps = [
-    { id: 1, label: 'Geral' },
-    { id: 2, label: 'Audiência' },
-    { id: 3, label: 'Conteúdo' },
-    { id: 4, label: 'Configurações' },
-    { id: 5, label: 'Revisão' },
+    { id: 1, label: t('wizard.steps.general') },
+    { id: 2, label: t('wizard.steps.audience') },
+    { id: 3, label: t('wizard.steps.content') },
+    { id: 4, label: t('wizard.steps.settings') },
+    { id: 5, label: t('wizard.steps.review') },
   ];
 
   const totalSteps = steps.length;
@@ -532,7 +532,7 @@ export default function NewCampaign() {
         </div>
       )}
       {/* Header */}
-      <div className="border-b bg-background/95 backdrop-blur p-6 flex-shrink-0">
+      <div className="border-b bg-background/95 backdrop-blur px-6 py-4 flex-shrink-0">
         <div>
           <h2 className="text-2xl font-semibold">
             {isEditMode ? t('wizard.editTitle') : t('wizard.title')}
@@ -542,7 +542,7 @@ export default function NewCampaign() {
       </div>
 
       {/* Progress */}
-      <div className="py-6 px-6 flex-shrink-0">
+      <div className="py-4 px-6 flex-shrink-0">
         <WizardProgress currentStep={currentStep} totalSteps={totalSteps} steps={steps} />
       </div>
 

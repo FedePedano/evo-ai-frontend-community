@@ -24,7 +24,7 @@ const Step1_BasicInfo = ({ data, onChange, onNext }: Step1Props) => {
     const newErrors: Record<string, string> = {};
 
     if (data.name && data.name.trim().length < 3) {
-      newErrors.name = 'Nome deve ter no mínimo 3 caracteres';
+      newErrors.name = t('wizard.validation.nameMinLength');
     }
 
     setErrors(newErrors);
@@ -34,9 +34,9 @@ const Step1_BasicInfo = ({ data, onChange, onNext }: Step1Props) => {
     const newErrors: Record<string, string> = {};
 
     if (!data.name || !data.name.trim()) {
-      newErrors.name = 'Nome é obrigatório';
+      newErrors.name = t('wizard.validation.nameRequired');
     } else if (data.name.trim().length < 3) {
-      newErrors.name = 'Nome deve ter no mínimo 3 caracteres';
+      newErrors.name = t('wizard.validation.nameMinLength');
     }
 
     if (!data.type) {
@@ -45,17 +45,17 @@ const Step1_BasicInfo = ({ data, onChange, onNext }: Step1Props) => {
 
     if (data.type === CampaignType.TRIGGER) {
       if (!data.triggerConfig || !data.triggerConfig.triggerType) {
-        newErrors.triggerConfig = 'Configuração de trigger é obrigatória para campanhas com gatilho';
+        newErrors.triggerConfig = t('wizard.validation.triggerConfigRequired');
       } else if (data.triggerConfig.triggerType === 'event' && (!data.triggerConfig.eventName || !data.triggerConfig.eventName.trim())) {
-        newErrors.triggerConfig = 'Nome do evento é obrigatório para triggers do tipo evento';
+        newErrors.triggerConfig = t('wizard.validation.triggerEventNameRequired');
       } else if (data.triggerConfig.triggerType === 'segment' && !data.triggerConfig.segmentId) {
-        newErrors.triggerConfig = 'Segmento é obrigatório para triggers do tipo segmento';
+        newErrors.triggerConfig = t('wizard.validation.triggerSegmentRequired');
       } else if (data.triggerConfig.triggerType === 'label' && !data.triggerConfig.labelId) {
-        newErrors.triggerConfig = 'Etiqueta é obrigatória para triggers do tipo etiqueta';
+        newErrors.triggerConfig = t('wizard.validation.triggerLabelRequired');
       } else if (data.triggerConfig.triggerType === 'customAttribute' && !data.triggerConfig.customAttributeName) {
-        newErrors.triggerConfig = 'Atributo personalizado é obrigatório para triggers do tipo atributo';
+        newErrors.triggerConfig = t('wizard.validation.triggerCustomAttributeRequired');
       } else if (data.triggerConfig.triggerType === 'webhook' && (!data.triggerConfig.webhookUrl || !data.triggerConfig.webhookUrl.trim())) {
-        newErrors.triggerConfig = 'URL do webhook é obrigatória para triggers do tipo webhook';
+        newErrors.triggerConfig = t('wizard.validation.triggerWebhookUrlRequired');
       }
     }
 
@@ -73,16 +73,16 @@ const Step1_BasicInfo = ({ data, onChange, onNext }: Step1Props) => {
     Object.keys(errors).length === 0;
 
   return (
-    <div className="flex flex-col max-w-4xl mx-auto py-6 px-6 h-full">
-      <div className="flex-1 overflow-y-auto min-h-0 px-1">
+    <div className="max-w-4xl mx-auto py-6 px-6">
+      <div className="px-1">
         <div className="w-full space-y-6 max-w-2xl mx-auto pb-4">
           {/* Name */}
           <div>
             <Label className="text-base mb-2 block font-semibold">
-              Nome <span className="text-red-500">*</span>
+              {t('wizard.step1.nameLabel')} <span className="text-red-500">*</span>
             </Label>
             <Input
-              placeholder="Ex: Campanha Black Friday 2025"
+              placeholder={t('wizard.step1.namePlaceholder')}
               value={data.name}
               onChange={(e) => onChange({ name: e.target.value })}
               className={`h-12 text-base ${errors.name ? 'border-red-500 focus:border-red-500' : ''}`}
@@ -94,16 +94,16 @@ const Step1_BasicInfo = ({ data, onChange, onNext }: Step1Props) => {
           {/* Description */}
           <div>
             <Label className="text-base mb-2 block font-semibold">
-              Descrição
+              {t('wizard.step1.descriptionLabel')}
             </Label>
             <Textarea
-              placeholder="Descreva brevemente o objetivo desta campanha..."
+              placeholder={t('wizard.step1.descriptionPlaceholder')}
               value={data.description}
               onChange={(e) => onChange({ description: e.target.value })}
               className="min-h-[100px] text-base resize-none"
               rows={4}
             />
-            <p className="text-xs text-muted-foreground mt-1">Opcional</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('wizard.step1.optional')}</p>
           </div>
 
           {/* Type */}
@@ -142,7 +142,7 @@ const Step1_BasicInfo = ({ data, onChange, onNext }: Step1Props) => {
         </div>
       </div>
 
-      <div className="flex justify-end flex-shrink-0 pt-4 border-t mt-6">
+      <div className="sticky bottom-0 bg-background flex justify-end pt-4 pb-2 border-t mt-6">
         <Button className="px-6 gap-2" onClick={handleNext} disabled={!isValid}>
           {t('wizard.actions.continue')}
           <ArrowRight className="h-4 w-4" />
