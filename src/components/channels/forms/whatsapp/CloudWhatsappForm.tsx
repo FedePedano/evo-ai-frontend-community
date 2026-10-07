@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useGlobalConfig } from '@/contexts/GlobalConfigContext';
@@ -34,6 +34,7 @@ export const CloudWhatsappForm = ({ form, onFormChange, canFB, onCancel }: Cloud
   const [fbSDKReady, setFbSDKReady] = useState(false);
   const [sessionInfo, setSessionInfo] = useState<any>(null);
   const [sdkResponse, setSdkResponse] = useState<any>(null);
+  const fallbackTried = useRef(false);
 
   const getStr = (key: string, fallback = ''): string =>
     typeof form[key] === 'string' ? (form[key] as string) : fallback;
@@ -48,6 +49,7 @@ export const CloudWhatsappForm = ({ form, onFormChange, canFB, onCancel }: Cloud
     setIsAutoFilled(false);
     setSessionInfo(null);
     setSdkResponse(null);
+    fallbackTried.current = false;
   };
 
   // Load Facebook SDK on component mount
@@ -72,6 +74,13 @@ export const CloudWhatsappForm = ({ form, onFormChange, canFB, onCancel }: Cloud
         return;
       }
 
+      // cb=<hex>... es el bridge cross-domain. Puede traer code/access_token embebidos
+      // en query-string, pero el token ya lo tenemos vía FB.login; se ignora para no duplicar.
+      // No loguear event.data: contiene signed_request / access_token sensibles.
+      if (typeof event.data === 'string' && event.data.startsWith('cb=')) {
+        return;
+      }
+
       try {
         const data = JSON.parse(event.data);
         if (data.type === 'WA_EMBEDDED_SIGNUP') {
@@ -90,8 +99,8 @@ export const CloudWhatsappForm = ({ form, onFormChange, canFB, onCancel }: Cloud
             setIsLoading(false);
           }
         }
-      } catch (error) {
-        console.error('Error parsing event data:', error);
+      } catch {
+        // Ignorar mensajes non-JSON del bridge (cb=..., xd_arbiter, etc.)
       }
     };
 
@@ -100,24 +109,53 @@ export const CloudWhatsappForm = ({ form, onFormChange, canFB, onCancel }: Cloud
   }, [t]);
 
   // Synchronize sessionInfo and sdkResponse
+  // Fix #84: Embedded Signup con config_id devuelve authResponse.accessToken,
+  // no authResponse.code. Aceptar ambos para no quedar en "Conectando..." infinito.
+  // Fallback: si hay token pero nunca llega postMessage FINISH, igual llamar al back
+  // con waba vacío y el back lo resuelve vía debug_token.
   useEffect(() => {
-    if (sessionInfo && sdkResponse && sdkResponse.authResponse && sdkResponse.authResponse.code) {
+    if (sessionInfo && sdkResponse && sdkResponse.authResponse) {
+      const codeOrToken =
+        sdkResponse.authResponse.code || sdkResponse.authResponse.accessToken;
+      if (!codeOrToken) return;
       if (
         sessionInfo.event === 'FINISH' ||
         sessionInfo.event === 'FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING'
       ) {
-        const { phone_number_id, waba_id, business_id } = sessionInfo.data;
-        const code = sdkResponse.authResponse.code;
+        fallbackTried.current = true;
+        const { phone_number_id, waba_id, business_id } = sessionInfo.data || {};
+        const code = sdkResponse.authResponse.code || '';
+        const accessToken = sdkResponse.authResponse.accessToken || '';
 
         handleConnectionSuccess({
           phone_number_id: phone_number_id || '',
           waba_id: waba_id || '',
           business_id: business_id || '',
-          code: code || '',
+          code,
+          accessToken,
         });
       }
     }
   }, [sessionInfo, sdkResponse]);
+
+  // Fallback #84: token sin FINISH → no quedarse en Conectando.
+  useEffect(() => {
+    const token = sdkResponse?.authResponse?.accessToken || sdkResponse?.authResponse?.code;
+    if (!token || sessionInfo || isAutoFilled) return;
+    if (fallbackTried.current) return;
+    const t = setTimeout(() => {
+      if (fallbackTried.current) return;
+      fallbackTried.current = true;
+      handleConnectionSuccess({
+        phone_number_id: '',
+        waba_id: '',
+        business_id: '',
+        code: sdkResponse?.authResponse?.code || '',
+        accessToken: sdkResponse?.authResponse?.accessToken || '',
+      });
+    }, 6000);
+    return () => clearTimeout(t);
+  }, [sdkResponse, sessionInfo, isAutoFilled]);
 
   // Reset states when auto-filled state changes
   useEffect(() => {
@@ -180,19 +218,22 @@ export const CloudWhatsappForm = ({ form, onFormChange, canFB, onCancel }: Cloud
     phone_number_id: string;
     waba_id: string;
     business_id?: string;
-    code: string;
+    code?: string;
+    accessToken?: string;
   }) => {
     try {
       setIsLoading(true);
 
-      // Step 1: Exchange code for access token and get channel data
-      const payload = {
-        code: data.code,
+      // Step 1: Exchange code/accessToken for long-lived token and get channel data
+      // Fix #84: si hay code se manda code, si hay accessToken se manda access_token.
+      const payload: Record<string, string> = {
         business_account_id: data.business_id || '',
         waba_id: data.waba_id,
       };
+      if (data.code) payload.code = data.code;
+      if (data.accessToken) payload.access_token = data.accessToken;
 
-      const result = await WhatsappService.exchangeCode(payload);
+      const result = await WhatsappService.exchangeCode(payload as any);
 
       // Step 2: Auto-fill form with received data
       onFormChange(
@@ -241,10 +282,10 @@ export const CloudWhatsappForm = ({ form, onFormChange, canFB, onCancel }: Cloud
     };
 
     // Launch Facebook login
+    // Fix #84: con Embedded Signup + config_id el JS SDK devuelve accessToken,
+    // no code. No forzar response_type:'code'.
     window.FB.login(fbLoginCallback, {
       config_id: config.wpWhatsappConfigId,
-      response_type: 'code',
-      override_default_response_type: true,
       extras: {
         version: 'v3',
         featureType: 'whatsapp_business_app_onboarding',
